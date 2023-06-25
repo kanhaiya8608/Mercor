@@ -26,7 +26,7 @@ const SideBar = () => {
   return (
     <div style={{ display: 'flex overflow-y-0 h-auto' }}>
       <Sidebar className="scrollbar-hide" style={{ color: '#787486' }} collapsed={collapsed}>
-        <Menu className="py-3">
+        <Menu className="py-2">
           <MenuItem
             icon={<img src="./assets/colorfilter.png" height={24} alt="Color Filter" />}
             onClick={() => setCollapsed(!collapsed)}

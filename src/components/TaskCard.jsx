@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Collaborators from './Collaborators';
 import {BsChatSquareDots, BsThreeDots} from 'react-icons/bs'
 import {FiFolderMinus} from 'react-icons/fi'
+
 const TaskCard = ({ item }) => {
   const renderImages = () => {
     if (item.images.length === 2) {
@@ -51,8 +52,8 @@ const TaskCard = ({ item }) => {
         backgroundColor = 'rgba(223, 168, 116, 0.2)';
         break;
       default:
-        textColor = '#D8727D';
-        backgroundColor = 'rgba(216, 114, 125, 0.1)';
+        textColor = 'rgba(104, 178, 102, 1)';
+        backgroundColor = 'rgba(131, 194, 157, 0.2)';
         break;
     }
   
@@ -66,7 +67,7 @@ const TaskCard = ({ item }) => {
       
       <div className="mt-2">
         <div className="flex justify-between mb-2">
-          <span className='text-xs p-1 rounded' style={getPriorityStyles(item.priority)}>{item.priority}</span>
+          <span className='text-xs font-medium p-1 rounded' style={getPriorityStyles(item.priority)}>{item.priority}</span>
           <BsThreeDots className='font-extrabold'/>
         </div>
         <h1 className="mb-2 text-lg font-semibold">

@@ -1,83 +1,71 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { v4 as uuidv4 } from 'uuid';
 import { columnsFromBackend } from './KanbanData';
-
+import { TouchBackend } from 'react-dnd-touch-backend'
 import TaskCard from './TaskCard';
-
 
 const Kanban = () => {
   const [columns, setColumns] = useState(columnsFromBackend);
+
   const onDragEnd = (result) => {
     if (!result.destination) return;
     const { source, destination } = result;
-  
-    const sourceColumnId = source.droppableId;
-    const destinationColumnId = destination.droppableId;
-  
-    // Get the source and destination columns
-    const sourceColumn = columns[sourceColumnId];
-    const destinationColumn = columns[destinationColumnId];
-  
-    // Get the source and destination items
-    const sourceItems = [...sourceColumn.items];
-    const destinationItems = [...destinationColumn.items];
-  
-    // Get the dragged item
-    const [draggedItem] = sourceItems.splice(source.index, 1);
-  
-    if (sourceColumnId === 'completed') {
-      // Moving from "completed" column
-      const pastPriority = draggedItem.pastPriority;
-      draggedItem.priority = pastPriority;
-    }
-  
-    // Update the items based on the destination
-    if (destinationColumnId === 'completed') {
-      // Moving to "completed" column
-      draggedItem.pastPriority = draggedItem.priority;
-      draggedItem.priority = 'Completed';
-    }
-  
-    // Insert the dragged item into the destination items
-    destinationItems.splice(destination.index, 0, draggedItem);
-  
-    // Update the source and destination columns
-    const updatedSourceColumn = {
-      ...sourceColumn,
-      items: sourceItems,
-    };
-  
-    const updatedDestinationColumn = {
-      ...destinationColumn,
-      items: destinationItems,
-    };
-  
-    // Update the columns state
-    setColumns((prevColumns) => ({
-      ...prevColumns,
-      [sourceColumnId]: updatedSourceColumn,
-      [destinationColumnId]: updatedDestinationColumn,
-    }));
-  };
 
-const handlePriorityChange = (columnId, taskId, priority) => {
-  const updatedColumns = {
-    ...columns,
-    [columnId]: {
-      ...columns[columnId],
-      items: columns[columnId].items.map((task) => {
-        if (task.id === taskId) {
-          return {
-            ...task,
-            priority: priority,
-          };
-        }
-        return task;
-      }),
-    },
+    if (source.droppableId === destination.droppableId) {
+      // Reorder items within the same column
+      const column = columns[source.droppableId];
+      const items = Array.from(column.items);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+
+      const updatedColumn = {
+        ...column,
+        items: items,
+      };
+
+      setColumns((prevColumns) => ({
+        ...prevColumns,
+        [source.droppableId]: updatedColumn,
+      }));
+    } else {
+      // Move items between columns
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns[destination.droppableId];
+      const sourceItems = Array.from(sourceColumn.items);
+      const destItems = Array.from(destColumn.items);
+      const [movedItem] = sourceItems.splice(source.index, 1);
+
+      if (destination.droppableId === 'completed') {
+        // Moving to the "completed" column, update the priority to "Completed"
+        movedItem.priority = 'Completed';
+      }
+
+      destItems.splice(destination.index, 0, movedItem);
+
+      const updatedSourceColumn = {
+        ...sourceColumn,
+        items: sourceItems,
+      };
+
+      const updatedDestColumn = {
+        ...destColumn,
+        items: destItems,
+      };
+
+      setColumns((prevColumns) => ({
+        ...prevColumns,
+        [source.droppableId]: updatedSourceColumn,
+        [destination.droppableId]: updatedDestColumn,
+      }));
+    }
   };
-  setColumns(updatedColumns);
-};
+  useEffect(() => {
+    // Apply touch backend options for mobile devices
+    if ('ontouchstart' in window) {
+      TouchBackend({ enableMouseEvents: true });
+    }
+  }, []);
 
   const renderAdd = (columnId) => {
     if (columnId === 'todo') {
@@ -117,12 +105,30 @@ const handlePriorityChange = (columnId, taskId, priority) => {
     }
   };
 
+  // const addNewTask = (columnId) => {
+  //   const newItem = {
+  //     id: uuidv4(),
+  //     heading: 'New Task',
+  //     priority: 'Low',
+  //   };
+
+  //   const updatedColumn = {
+  //     ...columns[columnId],
+  //     items: [...columns[columnId].items, newItem],
+  //   };
+
+  //   setColumns((prevColumns) => ({
+  //     ...prevColumns,
+  //     [columnId]: updatedColumn,
+  //   }));
+  // };
+
   return (
-    <DragDropContext onDragEnd={onDragEnd} touch={{ enable: true }}>
-      <div className="flex flex-col sm:flex-row">
+    <DragDropContext onDragEnd={onDragEnd} backend={TouchBackend}>
+      <div className="flex flex-col m-7 sm:flex-row">
         {Object.entries(columns).map(([columnId, column]) => (
-          <div className="flex flex-col w-80 h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
-            <div className="flex items-center justify-between">
+          <div className="flex flex-col w-{90%} sm:w-full h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
+            <div className="flex  items-center justify-between">
               <div className="flex items-center">
                 <div
                   className="w-2 h-2 rounded-full mr-2"
@@ -142,13 +148,13 @@ const handlePriorityChange = (columnId, taskId, priority) => {
                 margin: '8px 0',
               }}
             />
-           <Droppable droppableId={columnId} direction="vertical" isCombineEnabled={true}>
-           {(provided, snapshot) => (
-    <div
-      ref={provided.innerRef}
-      {...provided.droppableProps}
-      className="space-y-4"
-      onTouchStart={(event) => {
+            <Droppable droppableId={columnId} direction="vertical" isCombineEnabled={true}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="space-y-4"
+                  onTouchMove={(event) => {
                     // Prevent scrolling when dragging on mobile devices
                     event.stopPropagation();
                   }}
@@ -165,14 +171,7 @@ const handlePriorityChange = (columnId, taskId, priority) => {
                             event.stopPropagation();
                           }}
                         >
-                          <TaskCard
-                            id={item.id}
-                            item={item}
-                            isDropDisabled={columnId === 'completed'}
-                            onPriorityChange={(priority) =>
-                              handlePriorityChange(columnId, item.id, priority)
-                            }
-                          />
+                          <TaskCard id={item.id} item={item} isDropDisabled={columnId === 'completed'} />
                         </div>
                       )}
                     </Draggable>

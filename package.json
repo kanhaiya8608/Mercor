@@ -18,6 +18,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-pro-sidebar": "^1.1.0-alpha.1",
