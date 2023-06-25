@@ -116,15 +116,15 @@ const Kanban = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div
-                  className="w-5 h-5 rounded-full mr-2"
+                  className="w-2 h-2 rounded-full mr-2"
                   style={{ backgroundColor: getBulletColor(columnId) }}
                 ></div>
                 <h2 className="text-lg font-semibold flex items-center">
                   {column.title}
                   <span className="flex bord_5 ml-2 p-3 text-sm">{column.items.length}</span>
                 </h2>
-               
-              </div> {renderAdd(columnId)}
+              </div>
+              {renderAdd(columnId)}
             </div>
             <hr
               className="h-2"
@@ -135,7 +135,15 @@ const Kanban = () => {
             />
             <Droppable droppableId={columnId} direction="vertical" isCombineEnabled={true}>
               {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-4">
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="space-y-4"
+                  onTouchMove={(event) => {
+                    // Prevent scrolling when dragging on mobile devices
+                    event.stopPropagation();
+                  }}
+                >
                   {column.items.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
                       {(provided) => (
@@ -143,6 +151,10 @@ const Kanban = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          onTouchStart={(event) => {
+                            // Prevent scrolling when touching the draggable item on mobile devices
+                            event.stopPropagation();
+                          }}
                         >
                           <TaskCard id={item.id} item={item} isDropDisabled={columnId === 'completed'} />
                         </div>
