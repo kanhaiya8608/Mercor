@@ -123,7 +123,7 @@ const Kanban = () => {
       <div className="flex flex-col m-3 sm:flex-row">
         {Object.entries(columns).map(([columnId, column]) => (
           <div className="flex flex-col w-{90%} sm:w-full h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
-            <div className="flex  items-center justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div
                   className="w-2 h-2 rounded-full mr-2"
