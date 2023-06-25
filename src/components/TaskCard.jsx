@@ -8,7 +8,7 @@ const TaskCard = ({ item }) => {
   const renderImages = () => {
     if (item.images.length === 2) {
       return (
-        <div className="flex space-x-2 flex-col sm:flex-row">
+        <div className="flex sm:space-x-2 space-y-2 flex-col sm:flex-row">
           {item.images.map((image, index) => (
             <img
               key={index}
