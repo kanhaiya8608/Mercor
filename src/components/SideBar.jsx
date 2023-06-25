@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { GoDotFill } from 'react-icons/go';
 import { TbDots } from 'react-icons/tb';
 import { RxDoubleArrowLeft } from 'react-icons/rx';
 
 const SideBar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [hoveredItem, setHoveredItem] = useState(null);
 
   const handleMouseEnter = (index) => {
@@ -22,6 +22,24 @@ const SideBar = () => {
     { text: 'Design System', color: '#E4CCFD' },
     { text: 'Wireframes', color: '#76A5EA' },
   ];
+
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth < 768) {
+        setCollapsed(true);
+      } else {
+        setCollapsed(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Set initial state based on screen width
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div style={{ display: 'flex overflow-y-0 h-auto' }}>
