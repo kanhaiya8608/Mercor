@@ -117,26 +117,8 @@ const handlePriorityChange = (columnId, taskId, priority) => {
     }
   };
 
-  const addNewTask = (columnId) => {
-    const newItem = {
-      id: uuidv4(),
-      title: 'New Task',
-      priority: 'low',
-    };
-
-    const updatedColumn = {
-      ...columns[columnId],
-      items: [...columns[columnId].items, newItem],
-    };
-
-    setColumns((prevColumns) => ({
-      ...prevColumns,
-      [columnId]: updatedColumn,
-    }));
-  };
-
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} touch={{ enable: true }}>
       <div className="flex flex-col sm:flex-row">
         {Object.entries(columns).map(([columnId, column]) => (
           <div className="flex flex-col w-80 h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
@@ -160,13 +142,13 @@ const handlePriorityChange = (columnId, taskId, priority) => {
                 margin: '8px 0',
               }}
             />
-            <Droppable droppableId={columnId} direction="vertical" isCombineEnabled={true}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="space-y-4"
-                  onTouchMove={(event) => {
+           <Droppable droppableId={columnId} direction="vertical" isCombineEnabled={true}>
+           {(provided, snapshot) => (
+    <div
+      ref={provided.innerRef}
+      {...provided.droppableProps}
+      className="space-y-4"
+      onTouchStart={(event) => {
                     // Prevent scrolling when dragging on mobile devices
                     event.stopPropagation();
                   }}

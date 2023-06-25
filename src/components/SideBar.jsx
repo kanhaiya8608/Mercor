@@ -24,7 +24,7 @@ const SideBar = () => {
   ];
 
   return (
-    <div style={{ display: 'flex overflow-y-0' }}>
+    <div style={{ display: 'flex overflow-y-0 h-auto' }}>
       <Sidebar className="scrollbar-hide" style={{ color: '#787486' }} collapsed={collapsed}>
         <Menu className="py-3">
           <MenuItem
