@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { columnsFromBackend } from './KanbanData';
-import { TouchBackend } from 'react-dnd-touch-backend'
+
 import TaskCard from './TaskCard';
 
 const Kanban = () => {
@@ -60,12 +60,7 @@ const Kanban = () => {
       }));
     }
   };
-  useEffect(() => {
-    // Apply touch backend options for mobile devices
-    if ('ontouchstart' in window) {
-      TouchBackend({ enableMouseEvents: true });
-    }
-  }, []);
+ 
 
   const renderAdd = (columnId) => {
     if (columnId === 'todo') {
@@ -124,7 +119,7 @@ const Kanban = () => {
   // };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} backend={TouchBackend}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex flex-col m-7 sm:flex-row">
         {Object.entries(columns).map(([columnId, column]) => (
           <div className="flex flex-col w-{90%} sm:w-full h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
