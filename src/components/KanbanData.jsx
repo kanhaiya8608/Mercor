@@ -91,12 +91,12 @@ export const columnsFromBackend = {
     
   },
   completed: {
-    title: 'Completed',
+    title: 'Done',
     items: [
       {
         id: 'uuidv4()',
         heading: '',
-        priority: 'Low',
+        priority: 'Completed',
         images: [
           './assets/cards/PlantCare.png'
         ],
@@ -111,7 +111,7 @@ export const columnsFromBackend = {
       {
         id: uuidv4(),
         heading: 'Design System',
-        priority: 'Medium',
+        priority: 'Completed',
         images: [
         ],
         description: 'It just needs to adapt the UI from what you did before ',

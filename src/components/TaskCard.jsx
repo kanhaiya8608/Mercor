@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
 import Collaborators from './Collaborators';
-import {BsChatSquareDots, BsChatSquareDotsFill, BsThreeDots} from 'react-icons/bs'
+import {BsChatSquareDots, BsThreeDots} from 'react-icons/bs'
 import {FiFolderMinus} from 'react-icons/fi'
 const TaskCard = ({ item }) => {
   const renderImages = () => {
@@ -51,8 +51,8 @@ const TaskCard = ({ item }) => {
         backgroundColor = 'rgba(223, 168, 116, 0.2)';
         break;
       default:
-        textColor = 'black';
-        backgroundColor = 'transparent';
+        textColor = '#D8727D';
+        backgroundColor = 'rgba(216, 114, 125, 0.1)';
         break;
     }
   

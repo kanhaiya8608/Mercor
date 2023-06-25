@@ -4,53 +4,80 @@ import { columnsFromBackend } from './KanbanData';
 
 import TaskCard from './TaskCard';
 
+
 const Kanban = () => {
   const [columns, setColumns] = useState(columnsFromBackend);
-
   const onDragEnd = (result) => {
     if (!result.destination) return;
     const { source, destination } = result;
-
-    if (source.droppableId === destination.droppableId) {
-      const column = columns[source.droppableId];
-      const items = Array.from(column.items);
-      const [reorderedItem] = items.splice(source.index, 1);
-      items.splice(destination.index, 0, reorderedItem);
-
-      const updatedColumn = {
-        ...column,
-        items: items,
-      };
-
-      setColumns((prevColumns) => ({
-        ...prevColumns,
-        [source.droppableId]: updatedColumn,
-      }));
-    } else {
-      const sourceColumn = columns[source.droppableId];
-      const destColumn = columns[destination.droppableId];
-      const sourceItems = Array.from(sourceColumn.items);
-      const destItems = Array.from(destColumn.items);
-      const [removedItem] = sourceItems.splice(source.index, 1);
-      destItems.splice(destination.index, 0, removedItem);
-
-      const updatedSourceColumn = {
-        ...sourceColumn,
-        items: sourceItems,
-      };
-
-      const updatedDestColumn = {
-        ...destColumn,
-        items: destItems,
-      };
-
-      setColumns((prevColumns) => ({
-        ...prevColumns,
-        [source.droppableId]: updatedSourceColumn,
-        [destination.droppableId]: updatedDestColumn,
-      }));
+  
+    const sourceColumnId = source.droppableId;
+    const destinationColumnId = destination.droppableId;
+  
+    // Get the source and destination columns
+    const sourceColumn = columns[sourceColumnId];
+    const destinationColumn = columns[destinationColumnId];
+  
+    // Get the source and destination items
+    const sourceItems = [...sourceColumn.items];
+    const destinationItems = [...destinationColumn.items];
+  
+    // Get the dragged item
+    const [draggedItem] = sourceItems.splice(source.index, 1);
+  
+    if (sourceColumnId === 'completed') {
+      // Moving from "completed" column
+      const pastPriority = draggedItem.pastPriority;
+      draggedItem.priority = pastPriority;
     }
+  
+    // Update the items based on the destination
+    if (destinationColumnId === 'completed') {
+      // Moving to "completed" column
+      draggedItem.pastPriority = draggedItem.priority;
+      draggedItem.priority = 'Completed';
+    }
+  
+    // Insert the dragged item into the destination items
+    destinationItems.splice(destination.index, 0, draggedItem);
+  
+    // Update the source and destination columns
+    const updatedSourceColumn = {
+      ...sourceColumn,
+      items: sourceItems,
+    };
+  
+    const updatedDestinationColumn = {
+      ...destinationColumn,
+      items: destinationItems,
+    };
+  
+    // Update the columns state
+    setColumns((prevColumns) => ({
+      ...prevColumns,
+      [sourceColumnId]: updatedSourceColumn,
+      [destinationColumnId]: updatedDestinationColumn,
+    }));
   };
+
+const handlePriorityChange = (columnId, taskId, priority) => {
+  const updatedColumns = {
+    ...columns,
+    [columnId]: {
+      ...columns[columnId],
+      items: columns[columnId].items.map((task) => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            priority: priority,
+          };
+        }
+        return task;
+      }),
+    },
+  };
+  setColumns(updatedColumns);
+};
 
   const renderAdd = (columnId) => {
     if (columnId === 'todo') {
@@ -156,7 +183,14 @@ const Kanban = () => {
                             event.stopPropagation();
                           }}
                         >
-                          <TaskCard id={item.id} item={item} isDropDisabled={columnId === 'completed'} />
+                          <TaskCard
+                            id={item.id}
+                            item={item}
+                            isDropDisabled={columnId === 'completed'}
+                            onPriorityChange={(priority) =>
+                              handlePriorityChange(columnId, item.id, priority)
+                            }
+                          />
                         </div>
                       )}
                     </Draggable>
