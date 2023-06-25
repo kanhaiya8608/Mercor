@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { columnsFromBackend } from './KanbanData';
@@ -120,7 +120,7 @@ const Kanban = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex flex-col m-7 sm:flex-row">
+      <div className="flex flex-col m-3 sm:flex-row">
         {Object.entries(columns).map(([columnId, column]) => (
           <div className="flex flex-col w-{90%} sm:w-full h-full bg-neutral-100 rounded-lg p-4 m-4" key={columnId}>
             <div className="flex  items-center justify-between">

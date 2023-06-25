@@ -16,7 +16,7 @@ export default function Dropdown() {
         </div>
         <Menu.Button className="flex flex-wrap">
           <img src="./assets/mask.svg" alt="" />
-          <AiOutlineDown className="mr-2 h-5 w-5 mt-3 text-gray-400" aria-hidden="true" />
+          <AiOutlineDown className="mr-2 h-5 w-5 ml-4 mt-3 text-gray-400" aria-hidden="true" />
         </Menu.Button>
       </div>
 

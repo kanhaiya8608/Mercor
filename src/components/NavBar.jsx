@@ -24,7 +24,7 @@ function NavBar() {
         <img src="./assets/notification.svg" className="h-6" alt="" />
       
         </div>
-        <div className="p-3 space-x-5">
+        <div className="p-2 space-x-6">
             <Dropdown/>
         </div>
         </div>

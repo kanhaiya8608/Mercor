@@ -4,6 +4,7 @@ import './App.css'
 import SideBar from './components/SideBar.jsx';
 import Kanban from './components/Kanban';
 import Header from './components/Header';
+import ButtonRow from './components/ButtonRow.jsx';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <div>
           <NavBar />
           <Header/>
+          <ButtonRow/>
           <Kanban />
         </div>
       </div>

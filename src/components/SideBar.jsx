@@ -43,7 +43,7 @@ const SideBar = () => {
 
   return (
     <div style={{ display: 'flex overflow-y-0 h-auto' }}>
-      <Sidebar className="scrollbar-hide" style={{ color: '#787486' }} collapsed={collapsed}>
+      <Sidebar className="scrollbar-hide " style={{ color: '#787486' }} collapsed={collapsed}>
         <Menu className="py-2">
           <MenuItem
             icon={<img src="./assets/colorfilter.png" height={24} alt="Color Filter" />}
@@ -85,9 +85,9 @@ const SideBar = () => {
               </MenuItem>
             ))}
             {!collapsed && (
-              <div className="p-2 lg:mt-5 lg:w-full lg:max-w-md lg:flex-shrink-0">
-                <div className="rounded-2xl bg-gray-200 s text-center   lg:flex lg:flex-col lg:justify-center lg:my-12">
-                  <div className="-mt-14 mx-auto max-w-xs rounded-full bg-amber-100  content-center">
+              <div className="p-2 mt-autoss sm:  w-full max-w-md flex-shrink-0">
+                <div className="rounded-2xl bg-gray-200 text-center flex flex-col justify-center my-20 lg:my-16">
+                  <div className="sm:-mt-6 -mt-14 mx-auto max-w-xs rounded-full bg-amber-100  content-center">
                     <img src="./assets/lamp-on.svg" alt="Lamp" className="h-6 m-6" />
                   </div>
 

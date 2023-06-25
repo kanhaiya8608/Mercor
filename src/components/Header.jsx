@@ -18,21 +18,21 @@ const Header = () => {
         <p className="text-indigo-600 pr-2">Invite</p>
         <img
           src="/assets/collaborators/Ellipse12.png"
-          className="z-0 w-8 h-8 rounded-full border-2 border-white"
+          className=" w-8 h-8 rounded-full border-2 border-white"
         />
         <img
           src="/assets/collaborators/Ellipse13.png"
-          className="z-10 w-8 h-8 -ml-2 rounded-full border-2 border-white"
+          className="w-8 h-8 -ml-2 rounded-full border-2 border-white"
         />
         <img
           src="/assets/collaborators/Ellipse14.png"
-          className="z-20 w-8 h-8 -ml-2 rounded-full border-2 border-white"
+          className="w-8 h-8 -ml-2 rounded-full border-2 border-white"
         />
         <img
           src="/assets/collaborators/Ellipse15.png"
-          className="z-30 w-8 h-8 -ml-2 rounded-full border-2 border-white"
+          className="w-8 h-8 -ml-2 rounded-full border-2 border-white"
         />
-        <div className="z-30 w-8 h-8 -ml-2 flex items-center justify-center text-center rounded-full border-2 bg-red-200 text-red-500 border-white">
+        <div className=" w-8 h-8 -ml-2 flex items-center justify-center text-center rounded-full border-2 bg-red-200 text-red-500 border-white">
           +2
         </div>
       </div>
