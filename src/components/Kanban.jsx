@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import{ useState, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { columnsFromBackend } from './KanbanData';
@@ -7,6 +7,23 @@ import TaskCard from './TaskCard';
 
 const Kanban = () => {
   const [columns, setColumns] = useState(columnsFromBackend);
+
+  const [dragState, setDragState] = useState({
+    dragging: false,
+    initialX: 0,
+    initialY: 0,
+    currentX: 0,
+    currentY: 0,
+  });
+
+  const cardRef = useRef(null);
+
+  const onDragStart = (e) => {
+    // Prevent right-click behavior on touch devices
+    if (e.type === 'touchstart') {
+      e.preventDefault();
+    }
+  };
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -60,7 +77,67 @@ const Kanban = () => {
       }));
     }
   };
- 
+
+  const onTouchStart = (e, draggableProps) => {
+    const touch = e.touches[0];
+
+    // Store the initial touch position
+    setDragState((prevState) => ({
+      ...prevState,
+      dragging: true,
+      initialX: touch.clientX,
+      initialY: touch.clientY,
+      currentX: touch.clientX,
+      currentY: touch.clientY,
+    }));
+
+    // Add event listeners to handle touch movement and end events
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+
+    // Call the provided draggableProps onStart method to initialize dragging
+    draggableProps.onStart(e);
+  };
+
+  const onTouchMove = (e) => {
+    if (!dragState.dragging) return;
+
+    const touch = e.touches[0];
+
+    // Calculate the distance moved by the touch
+    const deltaX = touch.clientX - dragState.initialX;
+    const deltaY = touch.clientY - dragState.initialY;
+
+    // Update the current touch position
+    setDragState((prevState) => ({
+      ...prevState,
+      currentX: touch.clientX,
+      currentY: touch.clientY,
+    }));
+
+    // Adjust the card position accordingly
+    cardRef.current.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
+  };
+
+  const onTouchEnd = () => {
+    if (!dragState.dragging) return;
+
+    // Reset the drag state and remove the event listeners
+    setDragState((prevState) => ({
+      ...prevState,
+      dragging: false,
+      initialX: 0,
+      initialY: 0,
+      currentX: 0,
+      currentY: 0,
+    }));
+
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
+
+    // Reset the card position
+    cardRef.current.style.transform = '';
+  };
 
   const renderAdd = (columnId) => {
     if (columnId === 'todo') {
@@ -100,24 +177,6 @@ const Kanban = () => {
     }
   };
 
-  // const addNewTask = (columnId) => {
-  //   const newItem = {
-  //     id: uuidv4(),
-  //     heading: 'New Task',
-  //     priority: 'Low',
-  //   };
-
-  //   const updatedColumn = {
-  //     ...columns[columnId],
-  //     items: [...columns[columnId].items, newItem],
-  //   };
-
-  //   setColumns((prevColumns) => ({
-  //     ...prevColumns,
-  //     [columnId]: updatedColumn,
-  //   }));
-  // };
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex flex-col m-3 sm:flex-row">
@@ -149,24 +208,26 @@ const Kanban = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className="space-y-4"
-                  onTouchMove={(event) => {
-                    // Prevent scrolling when dragging on mobile devices
-                    event.stopPropagation();
-                  }}
                 >
                   {column.items.map((item, index) => (
                     <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided) => (
+                      {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          onTouchStart={(event) => {
-                            // Prevent scrolling when touching the draggable item on mobile devices
-                            event.stopPropagation();
-                          }}
+                          onTouchStart={(e) => onTouchStart(e, provided.dragHandleProps)}
+                          className={`bg-white shadow-md  rounded-lg ${
+                            snapshot.isDragging ? 'opacity-70' : ''
+                          }`}
+                          style={{ ...provided.draggableProps.style }}
                         >
-                          <TaskCard id={item.id} item={item} isDropDisabled={columnId === 'completed'} />
+                          <TaskCard
+                            item={item}
+                            index={index}
+                            columnId={columnId}
+                            ref={cardRef}
+                          />
                         </div>
                       )}
                     </Draggable>
